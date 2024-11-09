@@ -4,16 +4,77 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dark Theme Audio Player</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Dark theme for the background and text */
+    body, html { height: 100%; margin: 0; display: flex; align-items: center; justify-content: center; background-color: #121212; color: white; text-align: center; font-family: Arial, sans-serif; }
+
+    /* Full-screen responsive background */
+    body { background: url('bg.jpg') center center / cover no-repeat, #121212; }
+
+    /* Centered content and buttons */
+    #content { position: relative; z-index: 1; }
+
+    /* Play audio button styling */
+    #playButton { padding: 20px 40px; font-size: 1.2rem; background-color: #333; color: white; border: none; border-radius: 5px; cursor: pointer; }
+
+    /* Button disabled when audio is playing */
+    #playButton:disabled { background-color: #555; cursor: not-allowed; }
+
+    /* Subtitle display styling */
+    #subtitle { margin-top: 20px; font-size: 1rem; color: #ccc; }
+
+    /* Redirect button in top-right corner */
+    .redirect-button { position: absolute; top: 10px; right: 10px; }
+  </style>
 </head>
 <body>
+  <!-- Top-right navigation button to reload loading page -->
   <div class="redirect-button">
-    <button onclick="window.location.href='otherpage.html'">Go to Another Page</button>
+    <button onclick="window.location.href='loading.html'">Reload Loading Page</button>
   </div>
-  <div class="content">
+
+  <!-- Main content area with play button and subtitle display -->
+  <div id="content">
     <button id="playButton" onclick="playRandomAudio()">Play Audio</button>
     <div id="subtitle"></div>
   </div>
-  <script src="script.js"></script>
+
+  <script>
+    /* List of audio and subtitle file paths */
+    const audioFiles = [
+      { audio: 'audio/audio1/track.mp3', subtitle: 'audio/audio1/subtitle.txt' },
+      { audio: 'audio/audio2/track.mp3', subtitle: 'audio/audio2/subtitle.txt' },
+      // Add more audio and subtitle files as needed
+    ];
+
+    /* Current audio object */
+    let currentAudio = null;
+
+    /* Function to play a random audio file */
+    function playRandomAudio() {
+      if (currentAudio) currentAudio.pause(); // Stop any currently playing audio
+
+      const randomIndex = Math.floor(Math.random() * audioFiles.length); // Choose a random file
+      const selectedAudio = audioFiles[randomIndex]; // Get the selected audio
+
+      currentAudio = new Audio(selectedAudio.audio); // Create a new audio object
+
+      fetch(selectedAudio.subtitle) // Fetch the subtitle text
+        .then(response => response.text())
+        .then(subtitleText => {
+          document.getElementById('subtitle').innerText = subtitleText; // Display subtitle
+        })
+        .catch(error => console.error("Error loading subtitle:", error));
+
+      const playButton = document.getElementById('playButton'); // Get play button
+      playButton.disabled = true; // Disable button during playback
+
+      currentAudio.play(); // Play the audio
+
+      currentAudio.onended = () => { // Re-enable button when audio ends
+        playButton.disabled = false;
+      };
+    }
+  </script>
 </body>
 </html>
