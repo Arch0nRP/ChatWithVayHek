@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading...</title>
+  <style>
+    body, html { height: 100%; margin: 0; display: flex; justify-content: center; align-items: center; background-color: #121212; color: white; }
+    #progressBar { width: 80%; height: 20px; background-color: #333; border-radius: 10px; overflow: hidden; }
+    #progress { height: 100%; width: 0; background-color: #76c7c0; transition: width 0.1s; }
+  </style>
+</head>
+<body>
+  <div id="progressBar"><div id="progress"></div></div>
+
+  <script>
+    let progress = 0;
+    const progressElement = document.getElementById("progress");
+    
+    // Simulate loading
+    const loadingInterval = setInterval(() => {
+      if (progress >= 100) {
+        clearInterval(loadingInterval);
+        window.location.href = "index.html";
+      } else {
+        progress += 1;
+        progressElement.style.width = progress + "%";
+      }
+    }, 30);
+  </script>
+</body>
+</html>
